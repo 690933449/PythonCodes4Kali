@@ -43,7 +43,7 @@ except socket.error, e:
 while 1:
 	try:
 		buf = s.recv(2048)
-	except socke.error, e:
+	except socket.error, e:
 		print 'Error receiving data: %s' % e
 		sys.exit(1)
 	if not len(buf):
