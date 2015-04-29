@@ -5,19 +5,29 @@
 __author__ = 'Style'
 
 import socket, threading, time, traceback
-
+from command import ls
 
 def tcplink(sock, addr):
+    working_dir = '/'
     print 'Accept new connection from %s:%s' % addr
     while True:
         try:
             data = sock.recv(1024)
             time.sleep(1)
             print data
+            data = data.strip().split(' ')
+            command = data[0].lower()
+            arg = data[1:]
+            if command == 'ls':
+                res = ls(working_dir)
+                for r in res:
+                    sock.send(r)
+            elif data == 'cd':
+                pass
             if data == 'exit' or not data:
                 break
             try:
-                sock.send('You just entered command: %s' % data)
+                sock.send(command)
             except:
                 traceback.print_exc()
                 break
@@ -40,6 +50,9 @@ print 'Waiting for connection...'
 while 1:
     try:
         clientsock, clientaddr = s.accept()
+    except KeyboardInterrupt, e:
+        traceback.print_exc()
+        break
     except:
         traceback.print_exc()
         continue

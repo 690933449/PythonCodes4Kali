@@ -3,7 +3,8 @@
 # client.py
 __author__ = 'Style'
 
-import socket, sys
+import socket, sys, pprint
+from style import use_style
 
 
 def create_socket(ip, port):
@@ -49,15 +50,17 @@ if __name__ == '__main__':
     port = sys.argv[2]
     s = create_socket(ip, port)
     while 1:
-        data = raw_input("Please enter your command: ")
+        data = raw_input("ftp:161220128# ")
         send_data(s, data)
-        if data == 'exit':
+        data = data.strip().split(' ')
+        command = data[0]
+        argus = data[1:]
+        if command == 'exit':
             break
-        r = receive_data(s)
-        if len(r):
-            print 'Successfully received data:'
-            sys.stdout.write(r)
-            print "\n"
+        if command == 'ls':
+            while True:
+                r = receive_data(s)
+                print use_style(r, mode='1', fore='blue', back='green')
         else:
             print 'Failed!'
             break
