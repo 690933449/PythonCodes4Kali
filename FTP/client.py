@@ -3,9 +3,10 @@
 # client.py
 __author__ = 'Style'
 
-import socket, sys, pprint
+import socket, sys, json, logging, time
 from style import use_style
 
+logging.basicConfig(level=logging.INFO, filename='log.txt')
 
 def create_socket(ip, port):
     try:
@@ -35,7 +36,7 @@ def send_data(sock, data):
 
 def receive_data(sock):
     try:
-        buf = sock.recv(1024)
+        buf = sock.recv(4096)
     except socket.error, e:
         print 'Error receiving data: %s' % e
         sys.exit(1)
@@ -45,12 +46,26 @@ def receive_data(sock):
         return  buf
 
 
+def get_working_dir(s):
+    send_data(s,'director')
+    r = receive_data(s)
+    return r
+
+def handle_json(json_str):
+    logging.info('%s: json_str: %s' % (time.asctime(), json_str))
+    d = json.loads(json_str)
+    return list(d.itervalues())
+
+
+
+
 if __name__ == '__main__':
     ip = sys.argv[1]
     port = sys.argv[2]
     s = create_socket(ip, port)
+    working_dir = get_working_dir(s)
     while 1:
-        data = raw_input("ftp:161220128# ")
+        data = raw_input("ftp@161220128:%s#" % working_dir)
         send_data(s, data)
         data = data.strip().split(' ')
         command = data[0]
@@ -58,9 +73,18 @@ if __name__ == '__main__':
         if command == 'exit':
             break
         if command == 'ls':
-            while True:
-                r = receive_data(s)
-                print use_style(r, mode='1', fore='blue', back='green')
+            r = receive_data(s)
+            if len(r):
+                for x in handle_json(r):
+                    print x
+            else:
+                break
+        elif command == 'cd':
+            r = receive_data(s)
+            if not 'Error' in r:
+                working_dir = r
+            else:
+                print r
         else:
             print 'Failed!'
             break
