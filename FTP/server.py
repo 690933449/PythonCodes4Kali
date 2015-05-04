@@ -40,8 +40,8 @@ def tcplink(sock, addr):
             traceback.print_exc()
             break
     sock.close()
-    logging.info('%s: Connection from %s:%s closed.' % (time.asctime(), addr))
-    print 'Connection from %s:%s closed.' % addr
+    logging.info('%s: Connection from %s closed.' % (time.asctime(), addr))
+    print 'Connection from %s closed.' % addr
 
 
 host = ''

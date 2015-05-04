@@ -3,7 +3,7 @@
 # client.py
 __author__ = 'Style'
 
-import socket, sys, json, logging, time
+import socket, sys, json, logging, time, os
 from style import use_style
 
 logging.basicConfig(level=logging.INFO, filename='log.txt')
@@ -63,9 +63,10 @@ if __name__ == '__main__':
     ip = sys.argv[1]
     port = sys.argv[2]
     s = create_socket(ip, port)
-    working_dir = get_working_dir(s)
+    re_working_dir = get_working_dir(s)
+    lo_working_dir = os.sep
     while 1:
-        data = raw_input("ftp@161220128:%s#" % working_dir)
+        data = raw_input("ftp@161220128:%s#" % re_working_dir)
         send_data(s, data)
         data = data.strip().split(' ')
         command = data[0]
@@ -82,7 +83,7 @@ if __name__ == '__main__':
         elif command == 'cd':
             r = receive_data(s)
             if not 'Error' in r:
-                working_dir = r
+                re_working_dir = r
             else:
                 print r
         else:
