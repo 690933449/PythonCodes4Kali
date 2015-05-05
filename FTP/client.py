@@ -18,7 +18,7 @@ def create_socket(ip, port):
     print 'Connecting to server: %s:%d' % (str(ip), int(port))
     try:
         s.connect((ip, int(port)))
-    except socket.gaierroe, e:
+    except socket.gaierror, e:
         print 'Address-related error connecting to server: %s' % e
         sys.exit(1)
     except socket.error, e:
