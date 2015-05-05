@@ -3,7 +3,9 @@
 # command.py
 
 __author__ = 'Style'
-import os, json
+import os, json, logging
+
+logging.basicConfig(level=logging.INFO, filename='CommandLog.txt')
 
 
 def ls(director):
@@ -44,17 +46,25 @@ def send_files(sock, director, filename):
     fullname = os.path.join(director, filename)
     data = {}
     with open(fullname, 'rb') as f:
-        data['filename'] = fullname
+        data['filename'] = os.path.split(filename)[1]
         data['contents'] = f.read()
-        data['length'] = len(data['contents'])
-        sock.sendall(json.dumps(data))
+        json_str = json.dumps(data)
+        sock.send('%16d' % len(json_str))
+        sock.sendall(json_str)
 
 
-def rec_files(sock):
-    data = sock.recv(8)
-    while len(data) > 0:
-        data = sock.recv(8)
-    print data
+def rec_files(sock, working_dir):
+    FILE_SIZE =int(sock.recv(16))
+    logging.info('get the file size: %s' % FILE_SIZE)
+    data = ''
+    while len(data) < FILE_SIZE:
+        data += sock.recv(8)
+    data = json.loads(data)
+    file_dir = os.path.join(working_dir, data['filename'])
+    print data['filename']
+    print data['contents']
+    with open(file_dir,'wb') as f:
+        f.write(data['contents'])
 
 if __name__ == "__main__":
     working_dir = os.sep

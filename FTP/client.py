@@ -4,7 +4,6 @@
 __author__ = 'Style'
 
 import socket, sys, json, logging, time, os
-from style import use_style
 from command import cd, ls, rec_files
 
 logging.basicConfig(level=logging.INFO, filename='log.txt')
@@ -112,7 +111,7 @@ if __name__ == '__main__':
             elif command == 'put':
                 pass
             elif command == 'get':
-                rec_files(s)
+                rec_files(s, lo_working_dir)
             else:
                 print 'Wrong command!(you should input command:ls, cd, put, get, dir, lcd)'
     s.close()
