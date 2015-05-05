@@ -5,6 +5,7 @@ __author__ = 'Style'
 
 import socket, sys, json, logging, time, os
 from style import use_style
+from command import cd, ls
 
 logging.basicConfig(level=logging.INFO, filename='log.txt')
 
@@ -57,6 +58,20 @@ def handle_json(json_str):
     return list(d.itervalues())
 
 
+def handle_client(com, lo_dir):
+    com = com.strip().split(' ')
+    command = com[0]
+    argus = com[1:]
+    if command == 'dir':
+        for x in handle_json(ls(lo_dir)):
+            print x
+        return ''
+    elif command == 'lcd':
+        lo_dir = cd(lo_dir, argus[0])
+        return lo_dir
+    else:
+        print 'error!'
+        return ''
 
 
 if __name__ == '__main__':
@@ -66,27 +81,33 @@ if __name__ == '__main__':
     re_working_dir = get_working_dir(s)
     lo_working_dir = os.sep
     while 1:
-        data = raw_input("ftp@161220128:%s#" % re_working_dir)
-        send_data(s, data)
-        data = data.strip().split(' ')
-        command = data[0]
-        argus = data[1:]
-        if command == 'exit':
-            break
-        if command == 'ls':
-            r = receive_data(s)
-            if len(r):
-                for x in handle_json(r):
-                    print x
+        data = raw_input("ftp@161220128:local:%s to remote:%s#" % (lo_working_dir, re_working_dir))
+        if 'dir' in data or 'lcd' in data:
+            res = handle_client(data, lo_working_dir)
+            if len(res):
+                lo_working_dir = res
             else:
-                break
-        elif command == 'cd':
-            r = receive_data(s)
-            if not 'Error' in r:
-                re_working_dir = r
-            else:
-                print r
+                pass
         else:
-            print 'Failed!'
-            break
+            send_data(s, data)
+            data = data.strip().split(' ')
+            command = data[0]
+            argus = data[1:]
+            if command == 'exit':
+                break
+            if command == 'ls':
+                r = receive_data(s)
+                if len(r):
+                    for x in handle_json(r):
+                        print x
+                else:
+                    break
+            elif command == 'cd':
+                r = receive_data(s)
+                if not 'Error' in r:
+                    re_working_dir = r
+                else:
+                    print r
+            else:
+                print 'Wrong command!(you should input command:ls, cd, put, get, dir, lcd)'
     s.close()

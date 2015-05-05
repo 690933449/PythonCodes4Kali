@@ -31,7 +31,7 @@ def tcplink(sock, addr):
                     logging.info('%s: Send working director: %s' % (time.asctime(), working_dir))
                     sock.send(working_dir)
                 except IOError, e:
-                    logging.info('%s: cd command occured a error: %s' % (time.asctime(), e))
+                    logging.info('%s: cd command occurred a error: %s' % (time.asctime(), e))
                     sock.send('Error: %s' % e)
                     pass
             if command == 'exit' or not data:
@@ -41,7 +41,7 @@ def tcplink(sock, addr):
             break
     sock.close()
     logging.info('%s: Connection from %s closed.' % (time.asctime(), addr))
-    print 'Connection from %s closed.' % addr
+    print 'Connection from %s:%s closed.' % addr
 
 
 host = ''
