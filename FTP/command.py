@@ -51,7 +51,9 @@ def send_files(sock, director, filename):
 
 
 def rec_files(sock):
-    data = sock.recv(4096)
+    data = sock.recv(8)
+    while len(data) > 0:
+        data = sock.recv(8)
     print data
 
 if __name__ == "__main__":
