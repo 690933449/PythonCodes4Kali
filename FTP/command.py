@@ -40,6 +40,20 @@ def cd(working_dir, director):
     return  working_dir
 
 
+def send_files(sock, director, filename):
+    fullname = os.path.join(director, filename)
+    data = {}
+    with open(fullname, 'rb') as f:
+        data['filename'] = fullname
+        data['contents'] = f.read()
+        data['length'] = len(data['contents'])
+        sock.sendall(json.dumps(data))
+
+
+def rec_files(sock):
+    data = sock.recv(4096)
+    print data
+
 if __name__ == "__main__":
     working_dir = os.sep
     while True:

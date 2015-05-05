@@ -5,7 +5,7 @@
 __author__ = 'Style'
 
 import socket, threading, traceback, os, logging, time
-from command import ls, cd
+from command import ls, cd, send_files
 
 logging.basicConfig(level=logging.INFO, filename='ServerLog.txt')
 
@@ -33,7 +33,8 @@ def tcplink(sock, addr):
                 except IOError, e:
                     logging.info('%s: cd command occurred a error: %s' % (time.asctime(), e))
                     sock.send('Error: %s' % e)
-                    pass
+            elif command == 'get':
+                send_files(sock, working_dir, arg[0])
             if command == 'exit' or not data:
                 break
         except:

@@ -5,7 +5,7 @@ __author__ = 'Style'
 
 import socket, sys, json, logging, time, os
 from style import use_style
-from command import cd, ls
+from command import cd, ls, rec_files
 
 logging.basicConfig(level=logging.INFO, filename='log.txt')
 
@@ -74,6 +74,7 @@ def handle_client(com, lo_dir):
         return ''
 
 
+
 if __name__ == '__main__':
     ip = sys.argv[1]
     port = sys.argv[2]
@@ -108,6 +109,10 @@ if __name__ == '__main__':
                     re_working_dir = r
                 else:
                     print r
+            elif command == 'put':
+                pass
+            elif command == 'get':
+                rec_files(s)
             else:
                 print 'Wrong command!(you should input command:ls, cd, put, get, dir, lcd)'
     s.close()
