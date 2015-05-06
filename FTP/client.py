@@ -4,7 +4,7 @@
 __author__ = 'Style'
 
 import socket, sys, json, logging, time, os
-from command import cd, ls, rec_files
+from command import cd, ls, rec_files, send_files
 
 logging.basicConfig(level=logging.INFO, filename='log.txt')
 
@@ -109,9 +109,11 @@ if __name__ == '__main__':
                 else:
                     print r
             elif command == 'put':
-                pass
+                filename = os.path.split(argus[0])[1]
+                send_files(s,lo_working_dir,filename)
             elif command == 'get':
-                rec_files(s, lo_working_dir)
+                filename = os.path.split(argus[0])[1]
+                rec_files(s, lo_working_dir, argus[0])
             else:
                 print 'Wrong command!(you should input command:ls, cd, put, get, dir, lcd)'
     s.close()
