@@ -44,24 +44,34 @@ def cd(working_dir, director):
 
 def send_files(sock, director, filename):
     fullname = os.path.join(director, filename)
-    with open(fullname, 'rb') as f:
-        data = f.read()
-        sock.send('%16d' % len(data))
-        sock.sendall(data)
+    if not os.path.isfile(fullname):
+        sock.send('er')
+    else:
+        sock.send('ok')
+        with open(fullname, 'rb') as f:
+            data = f.read()
+            sock.send('%16d' % os.path.getsize(fullname))
+            sock.sendall(data)
 
 
 def rec_files(sock, working_dir,filename):
-    FILE_SIZE =int(sock.recv(16))
-    logging.info('get the file size: %s' % FILE_SIZE)
-    data = ''
-    while len(data) < FILE_SIZE:
-        data += sock.recv(8)
-    file_dir = os.path.join(working_dir, filename)
-    if os.path.isfile(file_dir):
-        file_dir = os.path.join(working_dir, 'new_' + filename)
-    print 'Receiving file: %s' % filename
-    with open(file_dir,'wb') as f:
-        f.write(data)
+    res = sock.recv(2)
+    if res == 'er':
+        print 'No such file or wrong director'
+    elif res == 'ok':
+        FILE_SIZE =int(sock.recv(16))
+        logging.info('get the file size: %s' % FILE_SIZE)
+        data = ''
+        while len(data) < FILE_SIZE:
+            data += sock.recv(8)
+        file_dir = os.path.join(working_dir, filename)
+        if os.path.isfile(file_dir):
+            file_dir = os.path.join(working_dir, 'new_' + filename)
+        print 'Receiving file: %s' % filename
+        with open(file_dir,'wb') as f:
+            f.write(data)
+    else:
+        print 'Failed to receive files.'
 
 if __name__ == "__main__":
     working_dir = os.sep

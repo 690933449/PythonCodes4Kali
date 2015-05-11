@@ -75,8 +75,8 @@ def handle_client(com, lo_dir):
 
 
 if __name__ == '__main__':
-    ip = sys.argv[1]
-    port = sys.argv[2]
+    ip = '127.0.0.1'#sys.argv[1]
+    port = 20128#sys.argv[2]
     s = create_socket(ip, port)
     re_working_dir = get_working_dir(s)
     lo_working_dir = os.sep
