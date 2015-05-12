@@ -39,7 +39,7 @@ def tcplink(sock, addr):
             elif command == 'put':
                 filename = os.path.split(arg[0])[1]
                 rec_files(sock, working_dir, filename)
-            if command == 'exit' or not data:
+            if command == 'exit' or  len(data) == 0:
                 break
         except:
             traceback.print_exc()

@@ -48,10 +48,13 @@ def send_files(sock, director, filename):
         sock.send('er')
     else:
         sock.send('ok')
-        with open(fullname, 'rb') as f:
-            data = f.read()
-            sock.send('%16d' % os.path.getsize(fullname))
-            sock.sendall(data)
+        try:
+            with open(fullname, 'rb') as f:
+                data = f.read()
+                sock.send('%16d' % os.path.getsize(fullname))
+                sock.sendall(data)
+        except IOError,e:
+            print e
 
 
 def rec_files(sock, working_dir,filename):
@@ -68,8 +71,11 @@ def rec_files(sock, working_dir,filename):
         if os.path.isfile(file_dir):
             file_dir = os.path.join(working_dir, 'new_' + filename)
         print 'Receiving file: %s' % filename
-        with open(file_dir,'wb') as f:
-            f.write(data)
+        try:
+            with open(file_dir,'wb') as f:
+                f.write(data)
+        except IOError, e:
+            print e
     else:
         print 'Failed to receive files.'
 

@@ -66,7 +66,11 @@ def handle_client(com, lo_dir):
             print x
         return ''
     elif command == 'lcd':
-        lo_dir = cd(lo_dir, argus[0])
+        try:
+            lo_dir = cd(lo_dir, argus[0])
+        except IOError,e:
+            print e
+            return ''
         return lo_dir
     else:
         print 'error!'
