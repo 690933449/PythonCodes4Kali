@@ -107,7 +107,7 @@ class ChatRoom(Room):
 
     def add(self, session):
         # 告诉所有人有新用户进入：：
-        self.broadcast(session.name + 'has entered the room.\r\n')
+        self.broadcast(session.name + ' has entered the room.\r\n')
         self.server.users[session.name] = session
         Room.add(self, session)
 
