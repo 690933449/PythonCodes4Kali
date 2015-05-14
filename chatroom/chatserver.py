@@ -27,7 +27,7 @@ class CommandHandler:
         '处理从给定的会话中接收到 的行。'
         if not line.strip():
             return
-        # 分离命令
+        # 分离命令：
         parts = line.split(' ', 1)
         cmd = parts[0]
         try:
@@ -83,7 +83,7 @@ class LoginRoom(Room):
 
     def unknown(self, session, cmd):
         # 所有未知命令（除了login或者logout外的一切）会导致一个警告：
-        session.push('Please login\nUse "login <nick>"\r\n')
+        session.push('Please log in\nUse "login <nick>"\r\n')
 
     def do_login(self, session, line):
         name = line.strip()
@@ -109,7 +109,7 @@ class ChatRoom(Room):
         # 告诉所有人有新用户进入：：
         self.broadcast(session.name + 'has entered the room.\r\n')
         self.server.users[session.name] = session
-        Room.add(session, session)
+        Room.add(self, session)
 
     def remove(self, session):
         Room.remove(self, session)
@@ -124,6 +124,12 @@ class ChatRoom(Room):
         session.push('The following are in this room:\r\n')
         for other in self.sessions:
             session.push(other.name + '\r\n')
+
+    def do_who(self, session, line):
+        '处理who命令，该命令用于查看谁登录了'
+        session.push('The following are logged in:\r\n')
+        for name in self.server.users:
+            session.push(name + '\r\n')
 
 
 class LogoutRoom(Room):
@@ -163,7 +169,6 @@ class ChatSession(async_chat):
             cur.remove(self)
         self.room = room
         room.add(self)
-
 
     def collect_incoming_data(self, data):
         self.data.append(data)
