@@ -117,7 +117,7 @@ class ChatRoom(Room):
         self.broadcast(session.name + 'has left the room.\r\n')
 
     def do_say(self, session, line):
-        self.broadcast(session.push + ': ' + line + '\r\n')
+        self.broadcast(session.name + ': ' + line + '\r\n')
 
     def do_look(self, session, line):
         '处理look命令，该命令用于查看谁在房间内'
